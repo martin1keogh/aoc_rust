@@ -15,7 +15,12 @@ impl Display for PuzzleInfo {
 }
 
 
-pub fn solve_puzzle<T, E: std::fmt::Debug>(pi: PuzzleInfo, parser: fn(&str) -> Result<T, E>, part1: fn(T) -> Option<i32>) -> () {
+pub fn solve_puzzle<T, E: std::fmt::Debug>(
+    pi: PuzzleInfo,
+    parser: fn(&str) -> Result<T, E>,
+    part1: fn(T) -> Option<i32>,
+    part2: fn(T) -> Option<i32>,
+) -> () {
     let session = env::var("SESSION").unwrap();
     let data = data::get_data(&pi, session.as_str()).unwrap();
 
@@ -23,5 +28,11 @@ pub fn solve_puzzle<T, E: std::fmt::Debug>(pi: PuzzleInfo, parser: fn(&str) -> R
         Ok(Some(res)) => println!("{} part1's solution: {}", pi, res),
         Ok(None) => println!("{} part1, solution not found", pi),
         Err(error) => println!("{} part1 failed: {:?}", pi, error),
+    };
+
+    match parser(data.as_str()).map(part2) {
+        Ok(Some(res)) => println!("{} part2's solution: {}", pi, res),
+        Ok(None) => println!("{} part2, solution not found", pi),
+        Err(error) => println!("{} part2 failed: {:?}", pi, error),
     }
 }

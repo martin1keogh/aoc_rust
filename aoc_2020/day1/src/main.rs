@@ -5,18 +5,14 @@ use aoc::PuzzleInfo;
 const TARGET: i32 = 2020;
 
 fn main() -> () {
-    aoc::solve_puzzle(PuzzleInfo { year: 2020, day: 1 }, parse_values, part1)
+    aoc::solve_puzzle(PuzzleInfo { year: 2020, day: 1 }, parse_values, part1, part2)
 }
 
 fn part1(values: Vec<i32>) -> Option<i32> {
-    for (index, v1) in values.iter().enumerate() {
-        for v2 in values.iter().skip(index + 1) {
-            if v1 + v2 == TARGET {
-                return Some(v1 * v2);
-            }
-        }
-    }
-    return None;
+    solve_for(values, 2)
+}
+fn part2(values: Vec<i32>) -> Option<i32> {
+    solve_for(values, 3)
 }
 
 fn combinations(values: Vec<i32>, k: usize) -> Vec<Vec<i32>> {
@@ -35,6 +31,12 @@ fn combinations(values: Vec<i32>, k: usize) -> Vec<Vec<i32>> {
             .collect::<Vec<Vec<i32>>>()
     ;
     return [with_head, without_head].concat()
+}
+
+fn solve_for(values: Vec<i32>, k: usize) -> Option<i32> {
+    combinations(values, k).iter()
+        .find(|comb| comb.iter().sum::<i32>() == TARGET)
+        .map(|t| t.iter().product())
 }
 
 fn parse_values(input: &str) -> Result<Vec<i32>, ParseIntError> {
@@ -66,6 +68,12 @@ mod test {
     fn test_part1() {
         let result = part1(PARSED.to_vec()).unwrap();
         assert_eq!(result, 514579)
+    }
+
+    #[test]
+    fn test_part2() {
+        let result = part2(PARSED.to_vec()).unwrap();
+        assert_eq!(result, 241861950)
     }
 
     #[test]
