@@ -1,4 +1,8 @@
+# rust
 target/
 
+# intellij
 *.iml
 .idea/
+
+aoc_*/day*/resources
